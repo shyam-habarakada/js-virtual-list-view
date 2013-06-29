@@ -1,0 +1,17 @@
+.vlv-container {
+    position: absolute;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    /* debug */
+    background-color: #fee;
+}
+
+.vlv-content {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    /* debug */
+    background-color: #eef;
+}
