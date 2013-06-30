@@ -1,16 +1,11 @@
-js-virtual-list-view
-====================
 
-A generic HTML component for rendering very large lists. Supports variable height elements. Currently depends on jQuery and _ (underscore) and we can consider refactoring those dependencies based on demand. Collaborators are needed. For example, I am not planning to add touch support for the scroll gesture until I need it, but someone else might want to do that.
-
-Usage:
-
-Assuming you have a document with container for the large list like,
-
-    <div id="listContainer"></div>
-
-And CSS like,
-
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>virtual-list-view-js - jsFiddle demo</title>
+        
+<style type='text/css'>
     BODY { padding: 40px; }
 
     #listContainer {
@@ -18,9 +13,14 @@ And CSS like,
         height: 500px;   
         border: 1px dotted #fcc;
     }
+</style>
+<link rel="stylesheet" type="text/css" href="../vlv.css">
 
-The following javascript will pupulate the list with test data:
-
+<script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
+<script type='text/javascript' src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type='text/javascript' src="../vlv.js"></script>
+<script type='text/javascript'>//<![CDATA[ 
+var onLoad = function() {
     // test data
     var testData = [],
         selected = [],
@@ -34,7 +34,7 @@ The following javascript will pupulate the list with test data:
     // test data source
     var listDataSource = {
         /* contentSource methods */
-        contentForRowAtIndex     :  function getContentForItem(index) {
+        contentForRowAtIndex     :  function (index) {
                                         var randomHeight = 20 + Math.round(50 * Math.random()),
                                             randomBackground = bgcolors[Math.round(4 * Math.random())],
                                             e = $('<div class="vlv-content"' +
@@ -55,6 +55,7 @@ The following javascript will pupulate the list with test data:
                                    }
     }
 
+    // bootstrap
     var listContainer = $('#listContainer')[0],
         vlv = new jsvlv($(listContainer).width(), 
                         $(listContainer).height(), 
@@ -62,3 +63,21 @@ The following javascript will pupulate the list with test data:
                         listDataSource /* is also the delegate */);
 
     vlv.show(listContainer);
+    vlv.dbgdmp();
+
+    // console.log($('#listContainer')[0].innerHTML);
+}
+
+$(window).load(onLoad);
+//]]>  
+</script>
+
+
+</head>
+<body>
+  <div id="listContainer"></div>
+</body>
+
+
+</html>
+
