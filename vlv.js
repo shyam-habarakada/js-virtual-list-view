@@ -7,12 +7,14 @@ function jsvlv(width,height,contentSource,delegate) {
              ' style="width:<%=width %>px;height:<%=height %>px;"></div>',
         _$el = $(_.template(_t, { id: _elId, width: width, height: height })),
         _el = _$el[0],
+        _container = null,
         _content = $('<div class="vlv-content"></div>')[0],          
         _viewportItems = [],
         _viewportStartIndex = 0,
         _viewportLastIndex = -1,
         _contentHeight = 0,
         _scrollDistance = 0,
+        _showing = false,
         _numberOfRows = contentSource ? contentSource.numberOfRows() : 0;
         
     function onItemClick(index,element) {
@@ -43,7 +45,6 @@ function jsvlv(width,height,contentSource,delegate) {
                     _content.style.top = _scrollDistance + "px";
                     break;
                 }
-                _i.dbgdmp();
             }
             // todo: trim the top
         } else {
@@ -66,7 +67,7 @@ function jsvlv(width,height,contentSource,delegate) {
         var ce = contentSource.contentForRowAtIndex(index),
             h;
         _content.appendChild(ce);
-        h = $(ce).outerHeight(true);
+        h = $(ce).outerHeight(false)
         _contentHeight += h;
         _viewportItems.push({ index: index, element: ce, height: h });
         addContentClickHandler(index,ce);
@@ -78,7 +79,7 @@ function jsvlv(width,height,contentSource,delegate) {
         var ce = contentSource.contentForRowAtIndex(index),
             h;
         _content.insertBefore(ce,_content.firstChild);
-        h = $(ce).outerHeight(true);
+        h = $(ce).outerHeight(false)
         _contentHeight += h;
         _viewportItems.unshift({ index: index, element: ce, height: h });
         addContentClickHandler(index,ce);
@@ -111,25 +112,8 @@ function jsvlv(width,height,contentSource,delegate) {
             i++;
         };
     }
-    
-    _i.getElement = function() {
-        return _el;
-    }
-    
-    _i.show = function(container) {
-        _el.appendChild(_content);
-        _el.addEventListener("mousewheel",onMouseWheel,true);
-        container.appendChild(_el);
-        fill();
-    }
-    
-    _i.hide = function() {
-        // todo: cleanup content bindings and elements
-        _el.removeEventListener("mousewheel",onScroll,true);
-        container.removeChild(_el);
-    }
-    
-    _i.reload = function() {
+
+    function reset() {
         while (_content.firstChild) {
           _content.removeChild(_content.firstChild);
         }
@@ -139,6 +123,33 @@ function jsvlv(width,height,contentSource,delegate) {
         _contentHeight = 0;
         _scrollDistance = 0;
         _numberOfRows = contentSource ? contentSource.numberOfRows() : 0;
+    }
+    
+    _i.getElement = function() {
+        return _el;
+    }
+    
+    _i.show = function(container) {
+        _el.appendChild(_content);
+        _el.addEventListener("mousewheel",onMouseWheel,true);
+        container.appendChild(_el);
+        _showing = true;
+        _container = container;
+        reset();
+        fill();
+    }
+    
+    _i.hide = function() {
+        // todo: cleanup content bindings and elements
+        _el.removeEventListener("mousewheel",onMouseWheel,true);
+        if(_showing) {
+            _container && _container.removeChild(_el);
+            _showing = false;
+        } 
+    }
+    
+    _i.reload = function() {
+        reset();
         fill();
     }
     
