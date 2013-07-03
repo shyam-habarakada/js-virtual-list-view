@@ -64,10 +64,11 @@ function jsvlv(width,height,contentSource,delegate) {
     // add to bottom
     function push(index) {
         var ce = contentSource.contentForRowAtIndex(index),
-            h = $(ce).outerHeight();
+            h;
+        _content.appendChild(ce);
+        h = $(ce).outerHeight(true);
         _contentHeight += h;
         _viewportItems.push({ index: index, element: ce, height: h });
-        _content.appendChild(ce);
         addContentClickHandler(index,ce);
         _viewportEndIndex = index;
     }
@@ -75,10 +76,11 @@ function jsvlv(width,height,contentSource,delegate) {
     // insert at top
     function unshift(index) {
         var ce = contentSource.contentForRowAtIndex(index),
-            h = $(ce).outerHeight();
+            h;
+        _content.insertBefore(ce,_content.firstChild);
+        h = $(ce).outerHeight(true);
         _contentHeight += h;
         _viewportItems.unshift({ index: index, element: ce, height: h });
-        _content.insertBefore(ce,_content.firstChild);
         addContentClickHandler(index,ce);
         _viewportStartIndex = index;
     }

@@ -15,3 +15,9 @@
     /* debug */
     background-color: #eef;
 }
+
+.vlv-item {
+    display: block;
+    float:left;
+    clear:left;
+}
