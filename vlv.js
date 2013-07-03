@@ -58,6 +58,7 @@ function jsvlv(width,height,contentSource,delegate) {
     
     function onMouseWheel(e) {
         e.preventDefault();
+        e.stopPropagation();
         _scrollDistance += e.wheelDeltaY;
         requestAnimationFrame(scroll);
     }
