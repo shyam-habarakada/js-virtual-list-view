@@ -9,6 +9,7 @@ function jsvlv(width,height,contentSource,delegate) {
         _el = _$el[0],
         _container = null,
         _content = $('<div class="vlv-content"></div>')[0],          
+        _frozen = false,
         _viewportItems = [],
         _viewportStartIndex = 0,
         _viewportLastIndex = -1,
@@ -18,6 +19,7 @@ function jsvlv(width,height,contentSource,delegate) {
         _numberOfRows = contentSource ? contentSource.numberOfRows() : 0;
         
     function onItemClick(index,element) {
+        if(_frozen) { return; }
         // todo: add support for element outerHeight changing after this event
         delegate.onSelectRow(index,element);
     }
@@ -58,6 +60,7 @@ function jsvlv(width,height,contentSource,delegate) {
     
     function onMouseWheel(e) {
         e.preventDefault();
+        if(_frozen) { return; }
         e.stopPropagation();
         _scrollDistance += e.wheelDeltaY;
         requestAnimationFrame(scroll);
@@ -152,6 +155,14 @@ function jsvlv(width,height,contentSource,delegate) {
     _i.reload = function() {
         reset();
         fill();
+    }
+
+    _i.freeze = function() {
+        _frozen = true;
+    }
+
+    _i.unfreeze = function() {
+        _frozen = false;
     }
     
     _i.dbgdmp = function() {
