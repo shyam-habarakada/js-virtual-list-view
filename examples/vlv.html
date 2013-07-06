@@ -65,6 +65,15 @@ var onLoad = function() {
     vlv.show(listContainer);
     vlv.dbgdmp();
 
+    $('#freezeCheckbox').click(function(){
+        var frozen = $('#freezeCheckbox')[0].checked;
+        if(frozen) {
+            vlv.freeze();
+        } else {
+            vlv.unfreeze();
+        }
+    });
+
     // console.log($('#listContainer')[0].innerHTML);
 
     window.vlv = vlv;
@@ -77,6 +86,7 @@ $(window).load(onLoad);
 
 </head>
 <body>
+  <input id="freezeCheckbox" type="checkbox" />&nbsp;<label for="freezeCheckbox">Freeze</label></p>
   <div id="listContainer"></div>
 </body>
 
