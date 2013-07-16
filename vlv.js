@@ -33,19 +33,6 @@ function jsvlv(width,height,contentSource,delegate) {
         element.removeEventListener("click", function(e){ onItemClick(index,element); }, false);        
     }
         
-    function scrollContent(dy) {
-        _$content.animate(
-            { top: dy + "px" },
-            {
-                duration: 50,
-                easing: 'linear',
-                complete : function(){
-                    console.log('animated');
-                }
-            }
-        );
-    }
-
     function animateScrollDistance() {
         var dy;
         if(Math.abs(_scrollDistancePending) < 2) {
