@@ -1,14 +1,14 @@
 function jsvlv(width,height,contentSource,delegate) {
     
-    var _i = this,   
-        _el = null,
+    var _i = this,
         _elId = ("vlv" + Math.round(Math.random() * 1000000)), 
         _t = '<div id="<%= id %>" class="vlv-container"' +
              ' style="width:<%=width %>px;height:<%=height %>px;"></div>',
         _$el = $(_.template(_t, { id: _elId, width: width, height: height })),
         _el = _$el[0],
         _container = null,
-        _content = $('<div class="vlv-content"></div>')[0],          
+        _$content = $('<div class="vlv-content"></div>'), 
+        _content = _$content[0],          
         _frozen = false,
         _viewportItems = [],
         _viewportStartIndex = 0,
@@ -32,6 +32,19 @@ function jsvlv(width,height,contentSource,delegate) {
         element.removeEventListener("click", function(e){ onItemClick(index,element); }, false);        
     }
         
+    function scrollContent(dy) {
+        _$content.animate(
+            { top: dy + "px" },
+            {
+                duration: 50,
+                easing: 'linear',
+                complete : function(){
+                    console.log('animated');
+                }
+            }
+        );
+    }
+
     function scroll() {
         var dy = _scrollDistance,
             index;
@@ -65,13 +78,34 @@ function jsvlv(width,height,contentSource,delegate) {
         _scrollDistance += e.wheelDeltaY;
         requestAnimationFrame(scroll);
     }
+
+    function onKeyDown(e) {
+        console.log(e.keyCode);
+        var handled = false;
+        if(_frozen) { return; }
+        // up or down arrow
+        if (e.keyCode == 38) {
+            _scrollDistance += 15;
+            requestAnimationFrame(scroll);
+            handled = true;
+        } else if (e.keyCode == 40) {
+            _scrollDistance -= 15;
+            requestAnimationFrame(scroll);
+            handled = true;
+        }
+
+        if(handled) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
     
     // add to bottom
     function push(index) {
         var ce = contentSource.contentForRowAtIndex(index),
             h;
         _content.appendChild(ce);
-        h = $(ce).outerHeight(false)
+        h = $(ce).outerHeight(true);
         _contentHeight += h;
         _viewportItems.push({ index: index, element: ce, height: h });
         addContentClickHandler(index,ce);
@@ -121,6 +155,7 @@ function jsvlv(width,height,contentSource,delegate) {
         while (_content.firstChild) {
           _content.removeChild(_content.firstChild);
         }
+        _content.style.top = "0px";
         _viewportItems = [];
         _viewportStartIndex = 0;        
         _viewportEndIndex = -1;
@@ -136,6 +171,7 @@ function jsvlv(width,height,contentSource,delegate) {
     _i.show = function(container) {
         _el.appendChild(_content);
         _el.addEventListener("mousewheel",onMouseWheel,true);
+        document.addEventListener("keydown",onKeyDown,true);
         container.appendChild(_el);
         _showing = true;
         _container = container;
@@ -146,6 +182,7 @@ function jsvlv(width,height,contentSource,delegate) {
     _i.hide = function() {
         // todo: cleanup content bindings and elements
         _el.removeEventListener("mousewheel",onMouseWheel,true);
+        document.removeEventListener("keydown",onKeyDown,true);
         if(_showing) {
             _container && _container.removeChild(_el);
             _showing = false;
