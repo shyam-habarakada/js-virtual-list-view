@@ -15,6 +15,7 @@ function jsvlv(width,height,contentSource,delegate) {
         _viewportLastIndex = -1,
         _contentHeight = 0,
         _scrollDistance = 0,
+        _scrollDistancePending = 0,
         _showing = false,
         _numberOfRows = contentSource ? contentSource.numberOfRows() : 0;
         
@@ -45,13 +46,26 @@ function jsvlv(width,height,contentSource,delegate) {
         );
     }
 
+    function animateScrollDistance() {
+        var dy;
+        if(Math.abs(_scrollDistancePending) < 2) {
+            _scrollDistance += _scrollDistancePending;
+            _scrollDistancePending = 0;
+        } else {
+            dy = Math.round(_scrollDistancePending * 0.6);
+            _scrollDistance += dy;
+            _scrollDistancePending -= dy;        
+        }
+    }
+
     function scroll() {
-        var dy = _scrollDistance,
-            index;
-        _content.style.top = dy + "px";
-        if(dy < 0) {
+        _i.dbgdmp();
+        var index;
+        animateScrollDistance();
+        _content.style.top = _scrollDistance + "px";
+        if(_scrollDistance < 0) {
             index = _viewportEndIndex + 1;
-            while(height - dy - _contentHeight > 0) {
+            while(height - _scrollDistance - _contentHeight > 0) {
                 if(index < _numberOfRows) {
                     push(index); 
                     index++;
@@ -69,13 +83,17 @@ function jsvlv(width,height,contentSource,delegate) {
             }
             // todo: trim the bottom and insert back to the top
         }
+
+        if(_scrollDistancePending != 0) {
+            requestAnimationFrame(scroll);
+        }
     }
     
     function onMouseWheel(e) {
         e.preventDefault();
         if(_frozen) { return; }
         e.stopPropagation();
-        _scrollDistance += e.wheelDeltaY;
+        _scrollDistancePending += e.wheelDeltaY;
         requestAnimationFrame(scroll);
     }
 
@@ -85,11 +103,11 @@ function jsvlv(width,height,contentSource,delegate) {
         if(_frozen) { return; }
         // up or down arrow
         if (e.keyCode == 38) {
-            _scrollDistance += 15;
+            _scrollDistancePending += 15;
             requestAnimationFrame(scroll);
             handled = true;
         } else if (e.keyCode == 40) {
-            _scrollDistance -= 15;
+            _scrollDistancePending -= 15;
             requestAnimationFrame(scroll);
             handled = true;
         }
@@ -206,9 +224,11 @@ function jsvlv(width,height,contentSource,delegate) {
         console.log({ 
             content : _viewportItems,
             scrollDistance: _scrollDistance,
+            scrollDistancePending: _scrollDistancePending,
             contentHeight: _contentHeight,
             firstIndex: _viewportStartIndex,
-            lastIndex: _viewportEndIndex
+            lastIndex: _viewportEndIndex,
+            contentTop: _content.style.top
         });
     }
 
