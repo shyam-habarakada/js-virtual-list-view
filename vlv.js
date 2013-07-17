@@ -29,9 +29,9 @@ function jsvlv(width,height,contentSource,delegate) {
     
     // defaults
     delegate = delegate || {};
-    delegate.onSelectRow || function() {};
-    delegate.onFocusRow || function() {};
-    delegate.onBlurRow || function() {};
+    delegate.onSelectRow = delegate.onSelectRow || function() {};
+    delegate.onFocusRow = delegate.onFocusRow || function() {};
+    delegate.onBlurRow = delegate.onBlurRow || function() {};
 
     function onItemClick(index,element) {
         if(_frozen) { return; }
