@@ -1,5 +1,10 @@
 function jsvlv(width,height,contentSource,delegate) {
     
+    var UP = -1,
+        DOWN = 1,
+        KEY_CODE_UP = 38,
+        KEY_CODE_DOWN = 40;
+
     var _i = this,
         _elId = ("vlv" + Math.round(Math.random() * 1000000)), 
         _t = '<div id="<%= id %>" class="vlv-container"' +
@@ -12,13 +17,20 @@ function jsvlv(width,height,contentSource,delegate) {
         _frozen = false,
         _viewportItems = [],
         _viewportStartIndex = 0,
-        _viewportLastIndex = -1,
+        _viewportEndIndex = -1,
         _contentHeight = 0,
         _scrollDistance = 0,
         _scrollDistancePending = 0,
         _showing = false,
-        _numberOfRows = contentSource ? contentSource.numberOfRows() : 0;
-        
+        _numberOfRows = contentSource ? contentSource.numberOfRows() : 0,
+        _indexOfFocused = -1;
+    
+    // defaults
+    delegate = delegate || {};
+    delegate.onSelectRow || function() {};
+    delegate.onFocusRow || function() {};
+    delegate.onBlurRow || function() {};
+
     function onItemClick(index,element) {
         if(_frozen) { return; }
         // todo: add support for element outerHeight changing after this event
@@ -46,15 +58,16 @@ function jsvlv(width,height,contentSource,delegate) {
     }
 
     function scroll() {
-        _i.dbgdmp();
-        var index;
+        var index,
+            cIndex;
         animateScrollDistance();
         _content.style.top = _scrollDistance + "px";
         if(_scrollDistance < 0) {
             index = _viewportEndIndex + 1;
             while(height - _scrollDistance - _contentHeight > 0) {
                 if(index < _numberOfRows) {
-                    push(index); 
+                    cIndex = _viewportItems[index - 1].index + 1;
+                    push(cIndex); 
                     index++;
                 } else {
                     _scrollDistance = height - _contentHeight;
@@ -80,31 +93,96 @@ function jsvlv(width,height,contentSource,delegate) {
         e.preventDefault();
         if(_frozen) { return; }
         e.stopPropagation();
+        removeKeyboardFocus();
         _scrollDistancePending += e.wheelDeltaY;
         requestAnimationFrame(scroll);
     }
 
     function onKeyDown(e) {
-        console.log(e.keyCode);
         var handled = false;
         if(_frozen) { return; }
-        // up or down arrow
-        if (e.keyCode == 38) {
-            _scrollDistancePending += 15;
-            requestAnimationFrame(scroll);
+        if (e.keyCode == KEY_CODE_UP) {
+            moveKeyboardFocus(UP);
             handled = true;
-        } else if (e.keyCode == 40) {
-            _scrollDistancePending -= 15;
-            requestAnimationFrame(scroll);
+        } else if (e.keyCode == KEY_CODE_DOWN) {
+            moveKeyboardFocus(DOWN);
             handled = true;
         }
-
         if(handled) {
             e.preventDefault();
             e.stopPropagation();
         }
     }
-    
+
+    function moveKeyboardFocus(direction) {
+        var nextIndexOfFocus,
+            cIndex;
+        if(_indexOfFocused == -1) {
+            _indexOfFocused = firstVisibleIndex();
+            delegate.onFocusRow(_viewportItems[_indexOfFocused].index, _viewportItems[_indexOfFocused].element);
+        } else {
+            nextIndexOfFocus = _indexOfFocused + direction;
+            if(nextIndexOfFocus > 0 && nextIndexOfFocus < _numberOfRows ) {
+                if(direction == DOWN && nextIndexOfFocus > _viewportEndIndex) {
+                    cIndex = _viewportItems[_viewportEndIndex].index + 1;
+                    push(nextIndexOfFocus);
+                }
+                delegate.onBlurRow(_viewportItems[_indexOfFocused].index, _viewportItems[_indexOfFocused].element);
+                scrollToItemAtIndex(nextIndexOfFocus);
+                delegate.onFocusRow(_viewportItems[nextIndexOfFocus].index, _viewportItems[nextIndexOfFocus].element);
+                _indexOfFocused = nextIndexOfFocus;
+            }
+        }
+        _i.dbgdmp()
+    }
+
+    function removeKeyboardFocus() {
+        if(_indexOfFocused != -1) {
+            delegate.onBlurRow(_viewportItems[_indexOfFocused].index, _viewportItems[_indexOfFocused].element);
+            _indexOfFocused = -1;
+        }
+    }
+
+    // fist visible index based on scroll position and current items in viewport
+    function firstVisibleIndex() {
+        var offsetAtTop = -_scrollDistance,
+            h = 0,
+            i = 0;
+        for( ; i < _viewportItems.length; i++) {
+            if(h >= offsetAtTop) { 
+                break;
+            } else {
+                h += _viewportItems[i].height;
+            }
+        }
+        return i;
+    }
+
+    function scrollToItemAtIndex(index) {
+        var offset = 0,
+            h = 0,
+            i = 0,
+            dy = 0;
+        for( ; i < _viewportItems.length; i++) {
+            h = _viewportItems[i].height;
+            if(i == index) { 
+                break;
+            } else {
+                offset += h;
+            }
+        }
+        if(offset < -_scrollDistance) {
+            // above the top edge
+            _scrollDistancePending += -(_scrollDistance + offset);
+            requestAnimationFrame(scroll);
+        } else if(h + offset > (height - _scrollDistance)) {
+            // below bottom edge
+            _scrollDistancePending -= offset + h - height + _scrollDistance; 
+            requestAnimationFrame(scroll);
+        }
+        // already visible. do nothing
+    }
+
     // add to bottom
     function push(index) {
         var ce = contentSource.contentForRowAtIndex(index),
@@ -157,6 +235,7 @@ function jsvlv(width,height,contentSource,delegate) {
     }
 
     function reset() {
+        removeKeyboardFocus();
         while (_content.firstChild) {
           _content.removeChild(_content.firstChild);
         }
@@ -208,15 +287,17 @@ function jsvlv(width,height,contentSource,delegate) {
     }
     
     _i.dbgdmp = function() {
-        console.log({ 
-            content : _viewportItems,
+        var o = { 
+            // content : _viewportItems,
             scrollDistance: _scrollDistance,
             scrollDistancePending: _scrollDistancePending,
             contentHeight: _contentHeight,
             firstIndex: _viewportStartIndex,
             lastIndex: _viewportEndIndex,
+            indexOfFocused : _indexOfFocused,
             contentTop: _content.style.top
-        });
+        };
+        console.log(JSON.stringify(o));
     }
 
     return _i;
