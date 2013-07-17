@@ -3,7 +3,9 @@ function jsvlv(width,height,contentSource,delegate) {
     var UP = -1,
         DOWN = 1,
         KEY_CODE_UP = 38,
-        KEY_CODE_DOWN = 40;
+        KEY_CODE_DOWN = 40,
+        KEY_CODE_ENTER = 13,
+        KEY_CODE_SPACE = 32;
 
     var _i = this,
         _elId = ("vlv" + Math.round(Math.random() * 1000000)), 
@@ -101,12 +103,22 @@ function jsvlv(width,height,contentSource,delegate) {
     function onKeyDown(e) {
         var handled = false;
         if(_frozen) { return; }
-        if (e.keyCode == KEY_CODE_UP) {
-            moveKeyboardFocus(UP);
-            handled = true;
-        } else if (e.keyCode == KEY_CODE_DOWN) {
-            moveKeyboardFocus(DOWN);
-            handled = true;
+        switch(e.keyCode) {
+            case KEY_CODE_UP:
+                moveKeyboardFocus(UP);
+                handled = true;
+                break;
+            case KEY_CODE_DOWN:
+                moveKeyboardFocus(DOWN);
+                handled = true;
+                break;
+            case KEY_CODE_ENTER:
+            case KEY_CODE_SPACE:
+                if(_indexOfFocused != -1) {
+                    delegate.onSelectRow(_viewportItems[_indexOfFocused].index, _viewportItems[_indexOfFocused].element);
+                    handled = true;
+                }
+                break;             
         }
         if(handled) {
             e.preventDefault();
