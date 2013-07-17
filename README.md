@@ -19,7 +19,7 @@ And CSS like,
         border: 1px dotted #fcc;
     }
 
-The following javascript will pupulate the list with test data:
+The following sample page will pupulate the list with test data:
 
     // test data
     var testData = [],
@@ -34,7 +34,7 @@ The following javascript will pupulate the list with test data:
     // test data source
     var listDataSource = {
         /* contentSource methods */
-        contentForRowAtIndex     :  function getContentForItem(index) {
+        contentForRowAtIndex     :  function (index) {
                                         var randomHeight = 20 + Math.round(50 * Math.random()),
                                             randomBackground = bgcolors[Math.round(4 * Math.random())],
                                             e = $('<div class="vlv-content"' +
@@ -48,11 +48,20 @@ The following javascript will pupulate the list with test data:
         numberOfRows             :  function() { return testData.length; },
 
         /* delegate methods */
-        onSelectRow              : function(index, element) { 
+        onSelectRow              :  function(index, element) { 
                                         selected[index] = true;
-                                        element.innerHTML += " (clicked)";
+                                        element.textContent += " *";
                                         element.style.backgroundColor = "#f66";
-                                   }
+                                    },
+
+        onFocusRow               :  function(index, element) { 
+                                        element.textContent = testData[index].label + " (focus)";
+                                    },
+
+        onBlurRow                :  function(index, element) { 
+                                        element.textContent = testData[index].label;
+                                    }
+
     }
 
     var listContainer = $('#listContainer')[0],
