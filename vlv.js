@@ -134,7 +134,7 @@ function jsvlv(width,height,contentSource,delegate) {
             delegate.onFocusRow(_viewportItems[_indexOfFocused].index, _viewportItems[_indexOfFocused].element);
         } else {
             nextIndexOfFocus = _indexOfFocused + direction;
-            if(nextIndexOfFocus > 0 && nextIndexOfFocus < _numberOfRows ) {
+            if(nextIndexOfFocus >= 0 && nextIndexOfFocus < _numberOfRows ) {
                 if(direction == DOWN && nextIndexOfFocus > _viewportEndIndex) {
                     cIndex = _viewportItems[_viewportEndIndex].index + 1;
                     push(nextIndexOfFocus);
