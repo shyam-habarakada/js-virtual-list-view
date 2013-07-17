@@ -63,8 +63,8 @@ function jsvlv(width,height,contentSource,delegate) {
         var index,
             cIndex;
         animateScrollDistance();
-        _content.style.top = _scrollDistance + "px";
         if(_scrollDistance < 0) {
+            _content.style.top = _scrollDistance + "px";
             index = _viewportEndIndex + 1;
             while(height - _scrollDistance - _contentHeight > 0) {
                 if(index < _numberOfRows) {
@@ -72,17 +72,21 @@ function jsvlv(width,height,contentSource,delegate) {
                     push(cIndex); 
                     index++;
                 } else {
-                    _scrollDistance = height - _contentHeight;
-                    _content.style.top = _scrollDistance + "px";
+                    if(_contentHeight > height) {
+                        _scrollDistance = height - _contentHeight;
+                        _content.style.top = _scrollDistance + "px";                        
+                    } else {
+                        _content.style.top = "0px";
+                        _scrollDistance = 0;
+                    }
                     break;
                 }
             }
             // todo: trim the top
-        } else {
-            if(_scrollDistance > 0) {
-                _content.style.top = "0px";
-                _scrollDistance = 0;
-            }
+        } else if(_scrollDistance > 0) {
+            _scrollDistance = 0;
+            _scrollDistancePending = 0;
+            _content.style.top = "0px";
             // todo: trim the bottom and insert back to the top
         }
 
