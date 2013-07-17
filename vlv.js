@@ -145,7 +145,6 @@ function jsvlv(width,height,contentSource,delegate) {
                 _indexOfFocused = nextIndexOfFocus;
             }
         }
-        _i.dbgdmp()
     }
 
     function removeKeyboardFocus() {
