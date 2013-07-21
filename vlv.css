@@ -1,7 +1,7 @@
 .vlv-container {
     position: absolute;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: hidden;
     /*debug*/
     /*background-color: #fee;*/
 }
