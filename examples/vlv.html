@@ -14,10 +14,14 @@
         border: 1px dotted #fcc;
     }
 </style>
-<link rel="stylesheet" type="text/css" href="../vlv-min.css">
+<link rel="stylesheet" type="text/css" href="../nanoscroller.css">
+<link rel="stylesheet" type="text/css" href="../vlv-scrollbar.css">
+<link rel="stylesheet" type="text/css" href="../vlv.css">
 
 <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js'></script>
 <script type='text/javascript' src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script type='text/javascript' src="../hammer.js"></script>
+<script type='text/javascript' src="../vlv-scrollbar.js"></script>
 <script type='text/javascript' src="../vlv.js"></script>
 <script type='text/javascript'>//<![CDATA[ 
 var onLoad = function() {
@@ -37,7 +41,7 @@ var onLoad = function() {
         contentForRowAtIndex     :  function (index) {
                                         var randomHeight = 20 + Math.round(50 * Math.random()),
                                             randomBackground = bgcolors[Math.round(4 * Math.random())],
-                                            e = $('<div class="vlv-content"' +
+                                            e = $('<div class="sample-content"' +
                                                   'style="height:' + randomHeight + 
                                                   'px;font-family:Helvetica;padding:5px;background-color:' +
                                                   randomBackground + ';"></div>')[0];
