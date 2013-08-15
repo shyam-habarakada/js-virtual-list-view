@@ -215,7 +215,7 @@ function jsvlv(width,height,contentSource,delegate) {
         var ce = contentSource.contentForRowAtIndex(index),
             h;
         _content.insertBefore(ce,_content.firstChild);
-        h = $(ce).outerHeight(false)
+        h = $(ce).outerHeight(true)
         _contentHeight += h;
         _viewportItems.unshift({ index: index, element: ce, height: h });
         addContentClickHandler(index,ce);
