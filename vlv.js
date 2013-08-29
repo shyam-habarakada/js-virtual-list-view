@@ -110,11 +110,12 @@ function jsvlv(width,height,contentSource,delegate) {
   }
 
   function onmousewheel(e) {
+    var dy = e.wheelDeltaY || e.wheelDelta || -(e.detail);
     e.preventDefault();
     if(_frozen) { return; }
     e.stopPropagation();
     removeKeyboardFocus();
-    _scrollDistancePending += e.wheelDeltaY;
+    _scrollDistancePending += dy;
     requestAnimationFrame(scroll);
   }
 
