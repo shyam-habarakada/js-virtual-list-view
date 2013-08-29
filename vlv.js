@@ -286,6 +286,7 @@ function jsvlv(width,height,contentSource,delegate) {
     while (_content.firstChild) {
       _content.removeChild(_content.firstChild);
     }
+    _scrollbar.hide();
     _content.style.top = "0px";
     _viewportItems = [];
     _viewportStartIndex = 0;        
