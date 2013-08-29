@@ -44,9 +44,6 @@ function jsvlvscrollbar(onchanged) {
     _dragging = false;
     _position = clamp(_position + _dy);
     _dy = 0;
-    if(_disabled) {
-      _$el.removeClass('vlv-sb-active');
-    }   
   }
 
   _i.getElement = function() {
@@ -75,9 +72,7 @@ function jsvlvscrollbar(onchanged) {
     Hammer(_slider).off( "dragstart", ondragstart, { prevent_default: true });
     Hammer(_slider).off( "drag", ondrag, { prevent_default: true });
     Hammer(_slider).off( "dragend", ondragend, { prevent_default: true });
-    if(!_dragging) {
-      _$el.removeClass('vlv-sb-active');
-    }
+    _$el.removeClass('vlv-sb-active');
     _disabled = true;
   }
 }
