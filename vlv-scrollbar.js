@@ -1,4 +1,4 @@
-function jsvlvscrollbar() {
+function jsvlvscrollbar(onchanged) {
   var _i = this,
       _t = '<div class="vlv-sb-pane"><div class="vlv-sb-slider"></div></div>',
       _$el = $(_t),
@@ -9,9 +9,11 @@ function jsvlvscrollbar() {
       _height = 0,
       _sliderHeight = 0,
       _position = 0,
+      _value = 0,
       _dy = 0,
       _dragging = false,
-      _disabled = false;
+      _disabled = false,
+      _onchanged = onchanged || function() { /* noop */ };
 
   function clamp(p) {
     if(p < 0) {
@@ -24,7 +26,9 @@ function jsvlvscrollbar() {
   }
 
   function updateSlider() {
-    _slider.style.top = clamp(_position + _dy) + "px";
+    var p = clamp(_position + _dy);
+    _slider.style.top = p + "px";
+    _onchanged(p / (_height - _sliderHeight));
   }
 
   function ondrag(event) {
@@ -51,6 +55,7 @@ function jsvlvscrollbar() {
 
   _i.set = function(value) {
     if(value < 0 || value > 1) throw "value must be between 0.0 and 1.0";
+    _value = value;
     _position = Math.round((_height - _sliderHeight) * value);
     requestAnimationFrame(updateSlider);
   }

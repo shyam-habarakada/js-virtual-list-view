@@ -98,10 +98,15 @@ function jsvlv(width,height,contentSource,delegate) {
     }
 
     if(_scrollDistancePending != 0) {
-        requestAnimationFrame(scroll);
+      requestAnimationFrame(scroll);
     }
   }
   
+  function onscrollbarchanged(value) {
+    _scrollDistancePending += (_scrollableHeight - height) * (-value) - _scrollDistance;
+    requestAnimationFrame(scroll);
+  }
+
   function onmousewheel(e) {
     e.preventDefault();
     if(_frozen) { return; }
@@ -291,7 +296,7 @@ function jsvlv(width,height,contentSource,delegate) {
   
   _i.show = function(container) {
     _el.appendChild(_content);
-    _scrollbar = new jsvlvscrollbar();
+    _scrollbar = new jsvlvscrollbar(onscrollbarchanged);
     _el.appendChild(_scrollbar.getElement());
     _$el.bind("mouseenter", onmouseenter);
     _$el.bind("mouseleave", onmouseleave);
