@@ -118,6 +118,37 @@ function jsvlv(width,height,contentSource,delegate) {
     requestAnimationFrame(scroll);
   }
 
+  function onmousewheelMozilla(e) {
+    var dy = e.wheelDeltaY || e.wheelDelta || -(e.detail);
+    e.preventDefault();
+    if(_frozen) { return; }
+    e.stopPropagation();
+    removeKeyboardFocus();
+    // mozilla sends smaller dy values. use a multiplier to amplify the value
+    // _scrollDistancePending += (dy * ( Math.abs(dy) > 1 ? dy * dy : 1));
+    _scrollDistancePending += -dy;
+    console.log(dy);
+    requestAnimationFrame(scroll);
+  }
+
+  function bindMousewheel() {
+    if(typeof(document.onmousewheel) == "object") {
+      document.body.addEventListener("mousewheel", onmousewheel);
+    } else {
+      // For firefox http://bit.ly/1037qm5
+      document.addEventListener("DOMMouseScroll", onmousewheelMozilla);        
+    }    
+  }
+
+  function unbindMousewheel() {
+    if(typeof(document.onmousewheel) == "object") {
+      document.body.removeEventListener("mousewheel", onmousewheel);
+    } else {
+      // For firefox http://bit.ly/1037qm5
+      document.removeEventListener("DOMMouseScroll", onmousewheelMozilla);        
+    }    
+  }
+
   function onmouseenter(e) {
     if(!_frozen) {
       _scrollbar.enable();
@@ -306,7 +337,7 @@ function jsvlv(width,height,contentSource,delegate) {
     _el.appendChild(_scrollbar.getElement());
     _$el.bind("mouseenter", onmouseenter);
     _$el.bind("mouseleave", onmouseleave);
-    _el.addEventListener("mousewheel", onmousewheel, true);
+    bindMousewheel();
     document.addEventListener("keydown", onkeydown, true);
     container.appendChild(_el);
     _showing = true;
@@ -316,9 +347,9 @@ function jsvlv(width,height,contentSource,delegate) {
   }
   
   _i.hide = function() {
-    _$el.bind("mouseenter", onmouseenter);
-    _$el.bind("mouseleave", onmouseleave);
-    _el.removeEventListener("mousewheel", onmousewheel, true);
+    _$el.unbind("mouseenter", onmouseenter);
+    _$el.unbind("mouseleave", onmouseleave);
+    unbindMousewheel();
     document.removeEventListener("keydown", onkeydown, true);
     if(_showing) {
       _container && _container.removeChild(_el);
