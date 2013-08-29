@@ -97,6 +97,8 @@ function jsvlv(width,height,contentSource,delegate) {
       // todo: trim the bottom and insert back to the top
     }
 
+    _scrollbar.set( -(_scrollDistance) / (_scrollableHeight - height) );
+
     if(_scrollDistancePending != 0) {
       requestAnimationFrame(scroll);
     }

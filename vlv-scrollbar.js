@@ -52,9 +52,11 @@ function jsvlvscrollbar(onchanged) {
 
   _i.set = function(value) {
     if(value < 0 || value > 1) throw "value must be between 0.0 and 1.0";
-    _value = value;
-    _position = Math.round((_height - _sliderHeight) * value);
-    requestAnimationFrame(updateSlider);
+    if(!_dragging) {
+      _value = value;
+      _position = Math.round((_height - _sliderHeight) * value);
+      requestAnimationFrame(updateSlider);
+    }
   }
 
   _i.enable = function() {
