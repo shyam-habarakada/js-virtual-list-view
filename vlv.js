@@ -276,6 +276,9 @@ function jsvlv(width,height,contentSource,delegate) {
         push(i);
         i++;
     };
+    if(_scrollableHeight > height) {
+      _scrollbar.show();
+    }
   }
 
   function reset() {

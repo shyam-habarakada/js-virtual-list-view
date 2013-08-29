@@ -1,6 +1,6 @@
 function jsvlvscrollbar(onchanged) {
   var _i = this,
-      _t = '<div class="vlv-sb-pane"><div class="vlv-sb-slider"></div></div>',
+      _t = '<div class="vlv-sb-pane vlv-sb-hidden"><div class="vlv-sb-slider"></div></div>',
       _$el = $(_t),
       _el = _$el[0],
       _$slider = $(".vlv-sb-slider", _el),
@@ -69,12 +69,20 @@ function jsvlvscrollbar(onchanged) {
     Hammer(_slider).on( "dragend", ondragend, { prevent_default: true });
   }
 
-  _i.disable = function()
-  {
+  _i.disable = function() {
     Hammer(_slider).off( "dragstart", ondragstart, { prevent_default: true });
     Hammer(_slider).off( "drag", ondrag, { prevent_default: true });
     Hammer(_slider).off( "dragend", ondragend, { prevent_default: true });
     _$el.removeClass('vlv-sb-active');
     _disabled = true;
   }
+
+  _i.show = function() {
+    _$el.removeClass('vlv-sb-hidden');    
+  }
+
+  _i.hide = function() {
+    _$el.addClass('vlv-sb-hidden');    
+  }
+
 }

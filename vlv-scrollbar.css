@@ -22,6 +22,10 @@
   opacity : 0.8;
 }
 
+.vlv-sb-hidden {
+  display: none;
+}
+
 .vlv-sb-slider {
   height: 20px;
   top: 0px;
