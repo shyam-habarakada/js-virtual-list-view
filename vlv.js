@@ -119,25 +119,11 @@ function jsvlv(width,height,contentSource,delegate) {
     requestAnimationFrame(scroll);
   }
 
-  function onmousewheelMozilla(e) {
-    var dy = e.wheelDeltaY || e.wheelDelta || -(e.detail);
-    e.preventDefault();
-    if(_frozen) { return; }
-    e.stopPropagation();
-    removeKeyboardFocus();
-    // mozilla sends smaller dy values. use a multiplier to amplify the value
-    // _scrollDistancePending += (dy * ( Math.abs(dy) > 1 ? dy * dy : 1));
-    _scrollDistancePending += -dy;
-    console.log(dy);
-    requestAnimationFrame(scroll);
-  }
-
   function bindMousewheel() {
     if(typeof(document.onmousewheel) == "object") {
       document.body.addEventListener("mousewheel", onmousewheel);
     } else {
-      // For firefox http://bit.ly/1037qm5
-      document.addEventListener("DOMMouseScroll", onmousewheelMozilla);        
+      // no mousewheel until firefox improves support for it      
     }    
   }
 
@@ -145,8 +131,7 @@ function jsvlv(width,height,contentSource,delegate) {
     if(typeof(document.onmousewheel) == "object") {
       document.body.removeEventListener("mousewheel", onmousewheel);
     } else {
-      // For firefox http://bit.ly/1037qm5
-      document.removeEventListener("DOMMouseScroll", onmousewheelMozilla);        
+      // no mousewheel until firefox improves support for it      
     }    
   }
 
