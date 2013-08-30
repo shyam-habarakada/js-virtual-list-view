@@ -97,7 +97,7 @@ function jsvlv(width,height,contentSource,delegate) {
       // todo: trim the bottom and insert back to the top
     }
 
-    _scrollbar.set( -(_scrollDistance) / (_scrollableHeight - height) );
+    _scrollbar && _scrollbar.set( -(_scrollDistance) / (_scrollableHeight - height) );
 
     if(_scrollDistancePending != 0) {
       requestAnimationFrame(scroll);
@@ -152,13 +152,13 @@ function jsvlv(width,height,contentSource,delegate) {
 
   function onmouseenter(e) {
     if(!_frozen) {
-      _scrollbar.enable();
+      _scrollbar && _scrollbar.enable();
       e.preventDefault();    
     } 
   }
 
   function onmouseleave(e) {
-    _scrollbar.disable();
+    _scrollbar && _scrollbar.disable();
     e.preventDefault();
   }
 
@@ -309,6 +309,8 @@ function jsvlv(width,height,contentSource,delegate) {
         i++;
     };
     if(_scrollableHeight > height) {
+      _scrollbar = new jsvlvscrollbar(onscrollbarchanged);
+      _el.appendChild(_scrollbar.getElement());
       _scrollbar.show();
     }
   }
@@ -318,7 +320,7 @@ function jsvlv(width,height,contentSource,delegate) {
     while (_content.firstChild) {
       _content.removeChild(_content.firstChild);
     }
-    _scrollbar.hide();
+    _scrollbar && _scrollbar.hide();
     _content.style.top = "0px";
     _viewportItems = [];
     _viewportStartIndex = 0;        
@@ -334,8 +336,6 @@ function jsvlv(width,height,contentSource,delegate) {
   
   _i.show = function(container) {
     _el.appendChild(_content);
-    _scrollbar = new jsvlvscrollbar(onscrollbarchanged);
-    _el.appendChild(_scrollbar.getElement());
     _$el.bind("mouseenter", onmouseenter);
     _$el.bind("mouseleave", onmouseleave);
     bindMousewheel();
@@ -365,12 +365,12 @@ function jsvlv(width,height,contentSource,delegate) {
 
   _i.freeze = function() {
     _frozen = true;
-    _scrollbar.disable();
+    _scrollbar && _scrollbar.disable();
   }
 
   _i.unfreeze = function() {
     _frozen = false;
-    _scrollbar.enable();
+    _scrollbar && _scrollbar.enable();
   }
   
   _i.dbgdmp = function() {

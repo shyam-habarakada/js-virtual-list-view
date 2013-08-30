@@ -57,15 +57,15 @@ function jsvlvscrollbar(onchanged) {
     if(!_dragging) {
       _value = value;
       _position = Math.round((_height - _sliderHeight) * value);
-      requestAnimationFrame(updateSlider);
+      updateSlider();
     }
   }
 
   _i.enable = function() {
     _$el.addClass('vlv-sb-active');
     _disabled = false;
-    _height = _$el.height();
-    _sliderHeight = _$slider.height();
+    _height = _height || _$el.height();
+    _sliderHeight = _sliderHeight || _$slider.height();
     Hammer(_slider).on( "dragstart", ondragstart, { prevent_default: true });
     Hammer(_slider).on( "drag", ondrag, { prevent_default: true });
     Hammer(_slider).on( "dragend", ondragend, { prevent_default: true });
