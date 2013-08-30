@@ -29,6 +29,8 @@ function jsvlv(width,height,contentSource,delegate) {
       _averageRowHeight = 0,
       _scrollableHeight = 0,
       _scrollbar = null;
+
+  var __count = 0;
   
   // defaults
   delegate = delegate || {};
@@ -97,6 +99,7 @@ function jsvlv(width,height,contentSource,delegate) {
       // todo: trim the bottom and insert back to the top
     }
 
+    console.log(__count++);
     _scrollbar.set( -(_scrollDistance) / (_scrollableHeight - height) );
 
     if(_scrollDistancePending != 0) {

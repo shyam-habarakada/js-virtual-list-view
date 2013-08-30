@@ -28,7 +28,9 @@ function jsvlvscrollbar(onchanged) {
   function updateSlider() {
     var p = clamp(_position + _dy);
     _slider.style.top = p + "px";
-    _onchanged(p / (_height - _sliderHeight));
+    if(_dragging) {
+      _onchanged(p / (_height - _sliderHeight));
+    }
   }
 
   function ondrag(event) {
