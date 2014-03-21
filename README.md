@@ -71,3 +71,13 @@ The following sample page will pupulate the list with test data:
                         listDataSource /* is also the delegate */);
 
     vlv.show(listContainer);
+    
+    
+Developer Setup (OSX)
+=====================
+
+1. Clone the repo
+2. Install yuicompressor
+3. When done making changes, run `./mnfy` to update minified files
+
+Test with `examples/vlv.html`. Feel free to add new tests.
