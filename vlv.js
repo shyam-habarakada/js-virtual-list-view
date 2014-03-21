@@ -121,7 +121,7 @@ function jsvlv(width,height,contentSource,delegate) {
 
   function bindMousewheel() {
     if(typeof(document.onmousewheel) == "object") {
-      document.body.addEventListener("mousewheel", onmousewheel);
+      document.body.addEventListener("mousewheel", onmousewheel, true);
     } else {
       // no mousewheel until firefox improves support for it      
     }    
@@ -129,7 +129,7 @@ function jsvlv(width,height,contentSource,delegate) {
 
   function unbindMousewheel() {
     if(typeof(document.onmousewheel) == "object") {
-      document.body.removeEventListener("mousewheel", onmousewheel);
+      document.body.removeEventListener("mousewheel", onmousewheel, true);
     } else {
       // no mousewheel until firefox improves support for it      
     }    
