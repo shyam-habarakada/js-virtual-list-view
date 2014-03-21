@@ -1,5 +1,5 @@
-minify vlv.css                vlv.min.css
-minify vlv.js                 vlv.min.js
-minify vlv-scrollbar.css      vlv-scrollbar.min.css
-minify vlv-scrollbar.js       vlv-scrollbar.min.js
+yuicompressor vlv.css              >  vlv.min.css
+yuicompressor vlv.js               >  vlv.min.js
+yuicompressor vlv-scrollbar.css    >  vlv-scrollbar.min.css
+yuicompressor vlv-scrollbar.js     >  vlv-scrollbar.min.js
 
