@@ -72,7 +72,8 @@ The following sample page will pupulate the list with test data:
 
     vlv.show(listContainer);
     
-    
+The `recalculateContentHeight` method can be used to update the view when the content of any list items change their height. This will cause the scrollbar to be recalculated and shown or hidden based on the new content.
+
 Developer Setup (OSX)
 =====================
 
