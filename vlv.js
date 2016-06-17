@@ -176,7 +176,12 @@ function jsvlv(width,height,contentSource,delegate) {
   function moveKeyboardFocus(direction) {
     var nextIndexOfFocus,
         cIndex;
-    if(_indexOfFocused == -1) {
+    if(_numberOfRows == 0) {
+      return;
+    } else if(_numberOfRows == 1) {
+      _indexOfFocused = 0;
+      delegate.onFocusRow(_viewportItems[_indexOfFocused].index, _viewportItems[_indexOfFocused].element);
+    } else if(_indexOfFocused == -1) {
       _indexOfFocused = firstVisibleIndex();
       delegate.onFocusRow(_viewportItems[_indexOfFocused].index, _viewportItems[_indexOfFocused].element);
     } else {
