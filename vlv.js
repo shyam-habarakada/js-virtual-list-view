@@ -1,5 +1,5 @@
 function jsvlv(width,height,contentSource,delegate) {
-  
+
   var UP = -1,
       DOWN = 1,
       KEY_CODE_UP = 38,
@@ -8,14 +8,14 @@ function jsvlv(width,height,contentSource,delegate) {
       KEY_CODE_SPACE = 32;
 
   var _i = this,
-      _elId = ("vlv" + Math.round(Math.random() * 1000000)), 
+      _elId = ("vlv" + Math.round(Math.random() * 1000000)),
       _t = '<div id="<%= id %>" class="vlv-container"' +
            ' style="width:<%=width %>px;height:<%=height %>px;"></div>',
       _$el = $(_.template(_t, { id: _elId, width: width, height: height })),
       _el = _$el[0],
       _container = null,
-      _$content = $('<div class="vlv-content"></div>'), 
-      _content = _$content[0],          
+      _$content = $('<div class="vlv-content"></div>'),
+      _content = _$content[0],
       _frozen = false,
       _viewportItems = [],
       _viewportStartIndex = 0,
@@ -45,15 +45,15 @@ function jsvlv(width,height,contentSource,delegate) {
     // todo: add support for element outerHeight changing after this event
     delegate.onSelectRow(index,element);
   }
-  
+
   function addContentClickHandler(index,element) {
-    element.addEventListener("click", function(e){ onItemClick(index,element); }, false);        
+    element.addEventListener("click", function(e){ onItemClick(index,element); }, false);
   }
 
   function removeContentClickHandler(index,element) {
-    element.removeEventListener("click", function(e){ onItemClick(index,element); }, false);        
+    element.removeEventListener("click", function(e){ onItemClick(index,element); }, false);
   }
-      
+
   function animateScrollDistance() {
     var dy;
     if(Math.abs(_scrollDistancePending) < 2) {
@@ -62,7 +62,7 @@ function jsvlv(width,height,contentSource,delegate) {
     } else {
       dy = Math.round(_scrollDistancePending * 0.6);
       _scrollDistance += dy;
-      _scrollDistancePending -= dy;        
+      _scrollDistancePending -= dy;
     }
   }
 
@@ -76,12 +76,12 @@ function jsvlv(width,height,contentSource,delegate) {
       while(height - _scrollDistance - _contentHeight > 0) {
         if(index < _numberOfRows) {
           cIndex = _viewportItems[index - 1].index + 1;
-          push(cIndex); 
+          push(cIndex);
           index++;
         } else {
           if(_contentHeight > height) {
               _scrollDistance = height - _contentHeight;
-              _content.style.top = _scrollDistance + "px";                        
+              _content.style.top = _scrollDistance + "px";
           } else {
               _content.style.top = "0px";
               _scrollDistance = 0;
@@ -103,7 +103,7 @@ function jsvlv(width,height,contentSource,delegate) {
       requestAnimationFrame(scroll);
     }
   }
-  
+
   function onscrollbarchanged(value) {
     _scrollDistancePending += (_scrollableHeight - height) * (-value) - _scrollDistance;
     requestAnimationFrame(scroll);
@@ -123,23 +123,23 @@ function jsvlv(width,height,contentSource,delegate) {
     if(typeof(document.onmousewheel) == "object") {
       document.body.addEventListener("mousewheel", onmousewheel, true);
     } else {
-      // no mousewheel until firefox improves support for it      
-    }    
+      // no mousewheel until firefox improves support for it
+    }
   }
 
   function unbindMousewheel() {
     if(typeof(document.onmousewheel) == "object") {
       document.body.removeEventListener("mousewheel", onmousewheel, true);
     } else {
-      // no mousewheel until firefox improves support for it      
-    }    
+      // no mousewheel until firefox improves support for it
+    }
   }
 
   function onmouseenter(e) {
     if(!_frozen) {
       _scrollbar && _scrollbar.enable();
-      e.preventDefault();    
-    } 
+      e.preventDefault();
+    }
   }
 
   function onmouseleave(e) {
@@ -207,7 +207,7 @@ function jsvlv(width,height,contentSource,delegate) {
         h = 0,
         i = 0;
     for( ; i < _viewportItems.length; i++) {
-      if(h >= offsetAtTop) { 
+      if(h >= offsetAtTop) {
         break;
       } else {
         h += _viewportItems[i].height;
@@ -223,7 +223,7 @@ function jsvlv(width,height,contentSource,delegate) {
         dy = 0;
     for( ; i < _viewportItems.length; i++) {
       h = _viewportItems[i].height;
-      if(i == index) { 
+      if(i == index) {
         break;
       } else {
         offset += h;
@@ -235,7 +235,7 @@ function jsvlv(width,height,contentSource,delegate) {
       requestAnimationFrame(scroll);
     } else if(h + offset > (height - _scrollDistance)) {
       // below bottom edge
-      _scrollDistancePending -= offset + h - height + _scrollDistance; 
+      _scrollDistancePending -= offset + h - height + _scrollDistance;
       requestAnimationFrame(scroll);
     }
     // already visible. do nothing
@@ -267,7 +267,7 @@ function jsvlv(width,height,contentSource,delegate) {
     addContentClickHandler(index,ce);
     _viewportStartIndex = index;
   }
-  
+
   // remove from bottom
   function pop() {
     var elInfo = _viewportItems.pop();
@@ -285,7 +285,7 @@ function jsvlv(width,height,contentSource,delegate) {
     _contentHeight -= elementInfo.height;
     _viewportStartIndex++;
   }
-  
+
   function fill() {
     var ce,h,
         i = 0;
@@ -308,17 +308,17 @@ function jsvlv(width,height,contentSource,delegate) {
     _scrollbar && _scrollbar.hide();
     _content.style.top = "0px";
     _viewportItems = [];
-    _viewportStartIndex = 0;        
+    _viewportStartIndex = 0;
     _viewportEndIndex = -1;
     _contentHeight = 0;
     _scrollDistance = 0;
     _numberOfRows = contentSource ? contentSource.numberOfRows() : 0;
   }
-  
+
   _i.getElement = function() {
     return _el;
   }
-  
+
   _i.show = function(container) {
     _el.appendChild(_content);
     _$el.bind("mouseenter", onmouseenter);
@@ -331,7 +331,7 @@ function jsvlv(width,height,contentSource,delegate) {
     reset();
     fill();
   }
-  
+
   _i.hide = function() {
     _$el.unbind("mouseenter", onmouseenter);
     _$el.unbind("mouseleave", onmouseleave);
@@ -340,9 +340,9 @@ function jsvlv(width,height,contentSource,delegate) {
     if(_showing) {
       _container && _container.removeChild(_el);
       _showing = false;
-    } 
+    }
   }
-  
+
   _i.reload = function() {
     reset();
     fill();
@@ -357,9 +357,35 @@ function jsvlv(width,height,contentSource,delegate) {
     _frozen = false;
     _scrollbar && _scrollbar.enable();
   }
-  
+
+  _i.recalculateContentHeight = function() {
+    _contentHeight = 0;
+    _averageRowHeight = 0;
+    _scrollableHeight = 0;
+    _viewportItems.forEach(function(vpi, index) {
+      h = $(vpi.element).outerHeight(true);
+      vpi.height = h;
+      _contentHeight += h;
+      _averageRowHeight = ( _averageRowHeight * index + h ) / (index + 1);
+      _scrollableHeight = _averageRowHeight * _numberOfRows;
+    });
+    if(_scrollableHeight > height) {
+      if(_scrollbar) {
+        _scrollbar.show();
+        _scrollbar.set( -(_scrollDistance) / (_scrollableHeight - height) );
+      } else {
+        _scrollbar = new jsvlvscrollbar(onscrollbarchanged);
+        _el.appendChild(_scrollbar.getElement());
+        _scrollbar.show();
+      }
+    } else {
+      _scrollDistance = 0;
+      _scrollbar && _scrollbar.hide();
+    }
+  }
+
   _i.dbgdmp = function() {
-    var o = { 
+    var o = {
               // content : _viewportItems,
               scrollDistance: _scrollDistance,
               scrollDistancePending: _scrollDistancePending,
