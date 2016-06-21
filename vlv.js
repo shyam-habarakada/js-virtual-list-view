@@ -68,7 +68,8 @@ function jsvlv(width,height,contentSource,delegate) {
 
   function scroll() {
     var index,
-        cIndex;
+        cIndex,
+        scrollBarValue;
     animateScrollDistance();
     if(_scrollDistance < 0) {
       _content.style.top = _scrollDistance + "px";
@@ -97,7 +98,8 @@ function jsvlv(width,height,contentSource,delegate) {
       // todo: trim the bottom and insert back to the top
     }
 
-    _scrollbar && _scrollbar.set( -(_scrollDistance) / (_scrollableHeight - height) );
+    scrollBarValue = -(_scrollDistance) / (_scrollableHeight - height);
+    _scrollbar && _scrollbar.set(((scrollBarValue < 0) ? 0 : ((scrollBarValue > 1) ? 1 : scrollBarValue)));
 
     if(_scrollDistancePending != 0) {
       requestAnimationFrame(scroll);
