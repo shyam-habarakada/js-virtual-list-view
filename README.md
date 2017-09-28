@@ -71,3 +71,14 @@ The following sample page will pupulate the list with test data:
                         listDataSource /* is also the delegate */);
 
     vlv.show(listContainer);
+    
+The `recalculateContentHeight` method can be used to update the view when the content of any list items change their height. This will cause the scrollbar to be recalculated and shown or hidden based on the new content.
+
+Developer Setup (OSX)
+=====================
+
+1. Clone the repo
+2. Install yuicompressor
+3. When done making changes, run `./mnfy` to update minified files
+
+Test with `examples/vlv.html`. Feel free to add new tests.
